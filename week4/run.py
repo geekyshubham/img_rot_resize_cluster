@@ -1,37 +1,29 @@
 #! /usr/bin/env python3
 import os
-import glob
 import requests
-import json
-files = glob.glob("supplier-data/descriptions/*.txt")
-url ='http://35.232.67.151/fruits/'
+
+filepath = "~/supplier-data/descriptions"
+filepath = os.path.expanduser(filepath)
+files=os.listdir(filepath)
+dict_desc = {}
 
 def read_file():
-  for file in files:
-    dict={}
-    lines=[]
-    with open(file) as f:
-      for line in f:
-         lines.append(line[:-1])
-      dict["name"]=lines[0]
-      dict["weigth"]=int((lines[1])[:-3])
-      dict["description"]=lines[2]
-      dict["image_name"]=file[-7:-4]+".jpeg"
-      print(dict)
-      post_dict(dict)
+  for file_name in files:
+    with open(filepath+'/' +file_name, "r") as file:
+      dict_desc["name"] = file.readline().rstrip()
+      dict_desc["weight"] = int(file.readline().split(" ")[0])
+      dict_desc["description"] = file.readline().rstrip()
+      dict_desc["image_name"] = file_name[:-4] + ".jpeg"
 
+    print(dict_desc)
+"""
 def post_dict(dict_data):
-  response = requests.post("http://35.232.67.151/fruits/", json=dict_data)
+  response = requests.post("http://35.238.48.235/fruits/", json=dict_data)
   if response.status_code == 201:
     print("Post to site successful for : ",dict_data["name"])
   else:
-    print("Error while posting : " + dict_data['name'] + ", error code : " + str(response.status_code))
-
+    print("Error while posting : " + dict_data['name'] + ", error code : " + str(response.raise_for_status()))
+"""
 if __name__ == "__main__":
   read_file()
 
-
-"""		
-		req=requests.post(url,json=dict)
-		print(req.raise_for_status())
-"""
